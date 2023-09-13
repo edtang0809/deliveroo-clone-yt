@@ -9,7 +9,7 @@ import {
 } from "react-native-heroicons/outline";
 import Categories from '../components/Categories';
 import FeaturedRow from '../components/FeaturedRow';
-import client  from '../sanity';
+import client from '../sanity';
 
 
 const HomeScreen = () => {
@@ -22,14 +22,21 @@ const HomeScreen = () => {
     });
   }, []);
 
-  useEffect(() =>{
-    client.fetch(`
-    *[_type =="restaurant"] {
-      ...,
-    }`).then(data =>{
+  useEffect(() => {
+    client.fetch(
+      `
+        *[_type == "featured"]{
+            ...,
+        restaurants[]->{
+            ...,
+            dishes[]->
+        }
+        }
+      `
+    ).then(data => {
       setFeaturedCategries(data);
     });
-  },[]);
+  }, []);
 
   console.log(featuredCategories);
 
@@ -80,26 +87,15 @@ const HomeScreen = () => {
         {/* Categories*/}
         <Categories />
         {/*Featured*/}
-        <FeaturedRow
-          id="123"
-          title="Featured"
-          description="Paid placements form our partners"
-          featuredCategory="featured"
-        />
-        {/*Tasty Discounts*/}
-        <FeaturedRow
-          id="1234"
-          title="Tasty Discounts"
-          description="Everyone's been enjoying these juicy discounts!"
-          featuredCategory="discounts"
-        />
-        {/*Offers near you*/}
-        <FeaturedRow
-          id="12345"
-          title="Offers near you"
-          description="Why not support your local restaurant tonight!"
-          featuredCategory="offers"
-        />
+
+        {featuredCategories?.map(category => (
+          <FeaturedRow
+            key={category._id}
+            id={category._id}
+            title={category.name}
+            description={category.short_description}
+          />
+        ))}
       </ScrollView>
     </SafeAreaView>
   );
