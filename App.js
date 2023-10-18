@@ -25,7 +25,7 @@ export default function App() {
             <Stack.Screen
               name="Basket"
               component={BasketScreen}
-              options={{ presentation: 'model', headerShown: false }}
+              options={{ presentation: 'modal', headerShown: false }}
             />
             <Stack.Screen
               name="PreparingOrderScreen"
